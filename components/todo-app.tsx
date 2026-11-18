@@ -71,6 +71,25 @@ export function TodoApp() {
         aria-label="새 할 일"
         autoFocus
       />
+      {todos.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>
+              {completedCount}/{todos.length} 완료
+            </span>
+            <span>{Math.round((completedCount / todos.length) * 100)}%</span>
+          </div>
+          <div
+            className="h-1.5 overflow-hidden rounded-full bg-muted"
+            aria-hidden="true"
+          >
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${(completedCount / todos.length) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
       <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
         <TabsList aria-label="필터">
           {FILTERS.map(({ value, label }) => (
@@ -81,13 +100,13 @@ export function TodoApp() {
         </TabsList>
       </Tabs>
       {visibleTodos.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">
+        <p className="rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
           {todos.length === 0
             ? "할 일이 없습니다"
             : "해당하는 할 일이 없습니다"}
         </p>
       ) : (
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col gap-2">
           {visibleTodos.map((todo) => (
             <TodoItem
               key={todo.id}
@@ -157,7 +176,12 @@ function TodoItem({
   }
 
   return (
-    <li className="group flex min-h-11 items-center gap-3 rounded-lg px-2 hover:bg-muted/50">
+    <li
+      className={cn(
+        "group flex min-h-12 items-center gap-3 rounded-xl border bg-card px-3 shadow-xs transition-colors hover:border-primary/40 hover:bg-muted/40",
+        todo.completed && "bg-muted/30"
+      )}
+    >
       <Checkbox
         checked={todo.completed}
         onCheckedChange={onToggle}
